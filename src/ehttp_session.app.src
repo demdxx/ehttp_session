@@ -1,0 +1,12 @@
+{application, ehttp_session,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { ehttp_session_app, []}},
+  {env, []}
+ ]}.

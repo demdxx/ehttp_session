@@ -28,3 +28,5 @@ start: compile
 	-pa ebin -pa deps/*/ebin \
 	-config priv/app.config \
 	-s example
+
+run: start

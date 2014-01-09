@@ -1,9 +1,0 @@
-{application,example,
-             [{description,[]},
-              {vsn,"1"},
-              {registered,[example_sup]},
-              {applications,[kernel,stdlib]},
-              {mod,{example_app,[]}},
-              {env,[]},
-              {modules,[example,example_app,example_index,
-                        example_session_backend,example_sup]}]}.

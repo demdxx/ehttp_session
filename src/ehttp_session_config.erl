@@ -1,4 +1,4 @@
--module(ehhtp_session_config).
+-module(ehttp_session_config).
 
 -export([backend/0]).
 -export([expiry_time/0]).
@@ -8,7 +8,7 @@
 
 %% @doc Gets the default expiry time for access tokens.
 -spec expiry_time() -> ExpiryTime when
-  ExpiryTime :: non_neg_integer().
+ ExpiryTime :: non_neg_integer().
 expiry_time() ->
   get_optional(expiry_time, ?DEFAULT_SESSION_EXPIRY).
 
@@ -16,7 +16,6 @@ expiry_time() ->
 -spec backend() -> Module when
    Module :: atom().
 backend() ->
-  io:fwrite("dsdsdsdsd", []),
   get_required(backend).
 
 %%%===================================================================

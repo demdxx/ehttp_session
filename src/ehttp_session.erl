@@ -4,53 +4,57 @@
 -export([set/3, get/2, id/1]).
 
 %%% Defines
--define(BACKEND, (ehttp_config:backend())).
+-define(BACKEND, (ehttp_session_config:backend())).
 
 % @doc check is session open
 -spec check(Req)
       -> ok | undefined when
     Req :: term().
 check(Req) ->
-  ?BACKEND:session_check(Req, ehttp_config:expiry_time()).
+  ?BACKEND:session_check(Req, ehttp_session_config:expiry_time()).
 
 %% @doc try open session
 -spec open(Req)
-      -> ok | error when
-    Req :: term().
+          -> {ok, SessionID, ReqR} | {error, ReqR} when
+    Req         :: term(),
+    SessionID   :: binary(),
+    ReqR        :: term().
 open(Req) ->
-  ?BACKEND:session_open(Req, ehttp_config:expiry_time()).
+  ?BACKEND:session_open(Req, ehttp_session_config:expiry_time()).
 
 %% @doc close session if open
 -spec close(Req)
-      -> ok | error when
-    Req :: term().
+          -> {ok, ReqR} | {error, ReqR} when
+    ReqR  :: term(),
+    Req   :: term().
 close(Req) ->
   ?BACKEND:session_close(Req).
 
 %% @doc set session variable
 -spec set(Req, Key, Value)
-      -> ok | error when
+          -> {ok, ReqR} | {error, ReqR} when
     Req   :: term(),
     Key   :: binary(),
-    Value :: binary().
+    Value :: binary(),
+    ReqR  :: term().
 set(Req, Key, Value) ->
   ?BACKEND:session_set(Req, Key, Value).
 
 %% @doc get session variable
 -spec get(Req, Key)
-      -> {ok, Value} | {error, Err} when
+          -> {ok, Value, ReqR} | {error, ReqR} when
     Req   :: term(),
     Key   :: binary(),
     Value :: binary(),
-    Err   :: notfound | undefined.
+    ReqR  :: term().
 get(Req, Key) ->
   ?BACKEND:session_get(Req, Key).
 
 %% @doc get session id
 -spec id(Req)
-      -> {ok, SessionID} | {error, Err} when
+          -> {ok, SessionID, ReqR} | {error, ReqR} when
     Req       :: term(),
     SessionID :: binary(),
-    Err       :: notopen | undefined.
+    ReqR      :: term().
 id(Req) ->
   ?BACKEND:session_id(Req).

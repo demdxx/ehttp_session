@@ -12,33 +12,37 @@
 
 %% @doc try open session
 -callback session_open(Req, ExpireTime)
-          -> ok | error when
+          -> {ok, SessionID, ReqR} | {error, ReqR} when
     Req         :: term(),
+    SessionID   :: binary(),
+    ReqR        :: term(),
     ExpireTime  :: non_neg_integer().
 
 %% @doc close session if open
 -callback session_close(Req)
-          -> ok | error when
+          -> {ok, ReqR} | {error, ReqR} when
+    ReqR  :: term(),
     Req   :: term().
 
 %% @doc set session variable
 -callback session_set(Req, Key, Value)
-          -> ok | error when
-    Req   :: term(),
-    Value :: binary(),
-    Key   :: binary().
-
-%% @doc get session variable
--callback session_get(Req, Key)
-          -> {ok, Value} | {error, Err} when
+          -> {ok, ReqR} | {error, ReqR} when
     Req   :: term(),
     Key   :: binary(),
     Value :: binary(),
-    Err   :: notfound | undefined.
+    ReqR  :: term().
+
+%% @doc get session variable
+-callback session_get(Req, Key)
+          -> {ok, Value, ReqR} | {error, ReqR} when
+    Req   :: term(),
+    Key   :: binary(),
+    Value :: binary(),
+    ReqR  :: term().
 
 %% @doc get session id
 -callback session_id(Req)
-          -> {ok, SessionID} | {error, Err} when
+          -> {ok, SessionID, ReqR} | {error, ReqR} when
     Req       :: term(),
     SessionID :: binary(),
-    Err       :: notopen | undefined.
+    ReqR      :: term().

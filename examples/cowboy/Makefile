@@ -23,10 +23,10 @@ distclean: clean
 		@$(REBAR) delete-deps
 		-@rmdir deps
 
-start: compile
+start:
 	erl \
 	-pa ebin -pa deps/*/ebin \
 	-config priv/app.config \
 	-s example
 
-run: start
+run: compile start

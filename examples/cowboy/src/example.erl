@@ -8,6 +8,7 @@
 %%%===================================================================
 
 start() ->
+  application:start(ranch),
   application:start(crypto),
   application:start(cowboy),
   application:start(ehttp_session),
@@ -17,4 +18,5 @@ stop() ->
   application:stop(example),
   application:stop(ehttp_session),
   application:stop(cowboy),
-  application:stop(crypto).
+  application:stop(crypto),
+  application:stop(ranch).

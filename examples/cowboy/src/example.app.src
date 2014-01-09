@@ -2,11 +2,11 @@
  [
   {description, ""},
   {vsn, "1"},
-  {registered, []},
+  {registered, [example_sup]},
   {applications, [
                   kernel,
                   stdlib
                  ]},
-  {mod, { example_app, []}},
+  {mod, {example_app, []}},
   {env, []}
  ]}.

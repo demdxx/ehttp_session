@@ -12,7 +12,6 @@
 %%%===================================================================
 
 start(_StartType, _StartArgs) ->
-  example_session_backend:start(),
   Dispatch = cowboy_router:compile([
             {'_', [
               {'_', example_index, []}
@@ -30,7 +29,6 @@ start(_StartType, _StartArgs) ->
   example_sup:start_link().
 
 stop(_State) ->
-  example_session_backend:stop(),
   ok.
 
 session_hook(Req) ->

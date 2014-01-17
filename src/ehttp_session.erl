@@ -42,19 +42,19 @@ set(Req, Key, Value) ->
 
 %% @doc get session variable
 -spec get(Req, Key)
-          -> {ok, Value, ReqR} | {error, ReqR} when
+          -> {Value, ReqR} when
     Req   :: term(),
     Key   :: binary(),
-    Value :: binary(),
+    Value :: binary() | atom(),
     ReqR  :: term().
 get(Req, Key) ->
   ?BACKEND:session_get(Req, Key).
 
 %% @doc get session id
 -spec id(Req)
-          -> {ok, SessionID, ReqR} | {error, ReqR} when
+          -> {SessionID, ReqR} when
     Req       :: term(),
-    SessionID :: binary(),
+    SessionID :: binary() | atom(),
     ReqR      :: term().
 id(Req) ->
   ?BACKEND:session_id(Req).

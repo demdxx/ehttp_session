@@ -5,5 +5,16 @@
   </head>
   <body>
     <h1>Session!</h1>
+    <form method="post">
+      <p>
+        <label>Value 1</label>
+        <input type="text" name="val1" value="{{val1}}" />
+      </p>
+      <p>
+        <label>Value 2</label>
+        <input type="text" name="val2" value="{{val2}}" />
+      </p>
+      <input type="submit" value="Update" />
+    </form>
   </body>
 </html>

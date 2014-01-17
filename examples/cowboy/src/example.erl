@@ -12,10 +12,12 @@ start() ->
   application:start(crypto),
   application:start(cowboy),
   application:start(ehttp_session),
+  example_session_backend:start(),
   application:start(example).
 
 stop() ->
   application:stop(example),
+  example_session_backend:stop(),
   application:stop(ehttp_session),
   application:stop(cowboy),
   application:stop(crypto),

@@ -34,15 +34,15 @@
 
 %% @doc get session variable
 -callback session_get(Req, Key)
-          -> {ok, Value, ReqR} | {error, ReqR} when
+          -> {Value, ReqR} when
     Req   :: term(),
     Key   :: binary(),
-    Value :: binary(),
+    Value :: binary() | atom(),
     ReqR  :: term().
 
 %% @doc get session id
 -callback session_id(Req)
-          -> {ok, SessionID, ReqR} | {error, ReqR} when
+          -> {SessionID, ReqR} when
     Req       :: term(),
     SessionID :: binary(),
     ReqR      :: term().

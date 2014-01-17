@@ -17,9 +17,15 @@
 %%%===================================================================
 
 start() ->
+  % start redis
+  application:start(eredis),
+  % application:set_env(eredis_connpool, pools, [{default, []}]),
+  application:start(eredis_connpool),
   ok.
 
 stop() ->
+  application:stop(eredis),
+  application:stop(eredis_connpool),
   ok.
 
 %%%===================================================================
@@ -46,8 +52,8 @@ session_check(Req, _ExpireTime) ->
     ExpireTime  :: non_neg_integer().
 session_open(Req, ExpireTime) ->
   case session_id(Req) of
-    {ok, SessionID} ->
-      {ok, SessionID, Req};
+    {SessionID, ReqN} ->
+      {ok, SessionID, ReqN};
     _ ->
       SessionID = ehttp_session_generator:generate(),
       Req1 = cowboy_req:set_resp_cookie(?SESSID, SessionID,
@@ -72,46 +78,47 @@ session_close(Req) ->
     Key   :: binary(),
     Value :: binary(),
     ReqR  :: term().
-session_set(_Req, _Key, _Value) ->
-  case ?MODULE:session_id() of
-    {ok, _SessionID, Req1} ->
-      {error, Req1};
+session_set(Req, Key, Value) ->
+  case ?MODULE:session_id(Req) of
+    {SessionID, Req1} ->
+      {Result, _} = eredisq:set(sess_key(SessionID, Key), Value),
+      {Result, Req1};
     R = _ ->
       R
   end.
 
 %% @doc get session variable
 -spec session_get(Req, Key)
-          -> {ok, Value, ReqR} | {error, ReqR} when
+          -> {Value, ReqR} when
     Req   :: term(),
     Key   :: binary(),
-    Value :: binary(),
+    Value :: binary() | atom(),
     ReqR  :: term().
-session_get(Req, _Key) ->
+session_get(Req, Key) ->
   case ?MODULE:session_id(Req) of
-    {ok, _SessionID, Req1} ->
-      {error, Req1};
-    R = _ ->
-      R
+    {SessionID, Req1} ->
+      case eredisq:get(sess_key(SessionID, Key)) of
+        {ok, Val} -> {Val, Req1};
+        Rt = _ -> Rt
+      end;
+    R = _ -> R
   end.
 
 %% @doc get session id
 -spec session_id(Req)
-          -> {ok, SessionID, ReqR} | {error, ReqR} when
+          -> {SessionID, ReqR} | {undefined, ReqR} when
     Req       :: term(),
     SessionID :: binary(),
     ReqR      :: term().
 session_id(Req) ->
-  case cowboy_req:cookie(?SESSID, Req) of
-    {undefined, Req1} ->
-      {error, Req1};
-    {SessionID, Req1} ->
-      {ok, SessionID, Req1}
-  end.
+  cowboy_req:cookie(?SESSID, Req).
 
 %%%===================================================================
 %%% Internal methods
 %%%===================================================================
+
+sess_key(SessionID, Key) ->
+  <<SessionID/binary, <<"__">>/binary, Key/binary>>.
 
 format_expire_type(_ExpireTime) ->
   <<"29 Nov 2033 23:50:14 GMT+4">>.

@@ -36,10 +36,19 @@ content_types_accepted(Req, State) ->
   {[{{<<"application">>, <<"x-www-form-urlencoded">>, []}, process_post}],
    Req, State}.
 
-process_post(Req, _State) ->
-  cowboy_req:reply(400, [], <<"Bad Request.">>, Req).
+process_post(Req, State) ->
+  {ok, PostVals, Req2} = cowboy_req:body_qs(Req),
+  Value1 = proplists:get_value(<<"val1">>, PostVals),
+  Value2 = proplists:get_value(<<"val2">>, PostVals),
+  {ok, _} = ?Session:set(Req, <<"Val1">>, Value1),
+  {ok, _} = ?Session:set(Req, <<"Val2">>, Value2),
+
+  {ok, Reply} = cowboy_req:reply(302, [{<<"Location">>, <<"/">>}], <<"Redirecting with Header!">>, Req2),
+  {halt, Reply, State}.
 
 process_get(Req, State) ->
-  {ok, Html} = index_dtl:render([]),
-  {ok, Resp} = cowboy_req:reply(200, [], Html, Req),
-  {halt, Resp, State}.
+  {Value1, _} = ?Session:get(Req, <<"Val1">>),
+  {Value2, _} = ?Session:get(Req, <<"Val2">>),
+  {ok, Html} = index_dtl:render([{val1, Value1}, {val2, Value2}]),
+  {ok, Reply} = cowboy_req:reply(200, [], Html, Req),
+  {halt, Reply, State}.
